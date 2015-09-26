@@ -11,6 +11,9 @@ var _ = require('underscore');
 var traverson = require('traverson');
 var JsonHalAdapter = require('traverson-hal');
 
+var apiHost = 'http://192.168.1.134:8080';
+
+// Loading page
 var main = new UI.Card({
     title: 'Pebble Connect',
     icon: 'images/menu_icon.png',
@@ -18,13 +21,11 @@ var main = new UI.Card({
 });
 main.show();
 
-
-
 // register the traverson-hal plug-in for media type 'application/hal+json'
 traverson.registerMediaType(JsonHalAdapter.mediaType, JsonHalAdapter);
 
 // use Traverson to follow links, as usual
-var api = traverson.from('http://192.168.1.134:8080')
+var api = traverson.from(apiHost)
         .jsonHal();
 var loadMenu = function (follow) {
     api.newRequest()
@@ -51,6 +52,10 @@ var loadMenu = function (follow) {
             });
 
             var menu = new UI.Menu({
+                backgroundColor: 'white',
+                textColor: 'black',
+                highlightBackgroundColor: 'dukeBlue',
+                highlightTextColor: 'white',
                 sections: [{
                         items: items
                     }]
@@ -60,10 +65,22 @@ var loadMenu = function (follow) {
                 newFollow.unshift('item[' + e.itemIndex + ']');
 
                 if (resource[e.itemIndex].action) {
+                    var notification = new UI.Card({
+                        title: 'Sending Command...'
+                    });
+                    notification.show();
+
                     var url = api.getFrom() + resource[e.itemIndex]._links.self.href;
                     ajax({
                         method: 'POST',
                         url: url
+                    }, function (){
+                        notification.subtitle('Sent! :)');
+                        setTimeout(function() {
+                            notification.hide();
+                        }, 2000);
+                    }, function (){
+                        notification.subtitle('An error occured :(');
                     });
                     return;
                 }
