@@ -6,55 +6,70 @@
 
 var UI = require('ui');
 var Vector2 = require('vector2');
+var ajax = require('ajax');
+var _ = require('underscore');
+var traverson = require('traverson');
+var JsonHalAdapter = require('traverson-hal');
 
 var main = new UI.Card({
-  title: 'Pebble.js',
-  icon: 'images/menu_icon.png',
-  subtitle: 'Hello World!',
-  body: 'Press any button.'
+    title: 'Pebble Connect',
+    icon: 'images/menu_icon.png',
+    subtitle: 'Loading...'
 });
-
 main.show();
 
-main.on('click', 'up', function(e) {
-  var menu = new UI.Menu({
-    sections: [{
-      items: [{
-        title: 'Pebble.js',
-        icon: 'images/menu_icon.png',
-        subtitle: 'Can do Menus'
-      }, {
-        title: 'Second Item',
-        subtitle: 'Subtitle Text'
-      }]
-    }]
-  });
-  menu.on('select', function(e) {
-    console.log('Selected item #' + e.itemIndex + ' of section #' + e.sectionIndex);
-    console.log('The item is titled "' + e.item.title + '"');
-  });
-  menu.show();
-});
 
-main.on('click', 'select', function(e) {
-  var wind = new UI.Window({
-    fullscreen: true,
-  });
-  var textfield = new UI.Text({
-    position: new Vector2(0, 65),
-    size: new Vector2(144, 30),
-    font: 'gothic-24-bold',
-    text: 'Text Anywhere!',
-    textAlign: 'center'
-  });
-  wind.add(textfield);
-  wind.show();
-});
 
-main.on('click', 'down', function(e) {
-  var card = new UI.Card();
-  card.title('A Card');
-  card.subtitle('Is a Window');
-  card.body('The simplest window type in Pebble.js.');
-  card.show();
-});
+// register the traverson-hal plug-in for media type 'application/hal+json'
+traverson.registerMediaType(JsonHalAdapter.mediaType, JsonHalAdapter);
+
+// use Traverson to follow links, as usual
+var api = traverson.from('http://192.168.1.134:8080')
+        .jsonHal();
+var loadMenu = function (follow) {
+    api.newRequest()
+        .follow(follow.slice())
+        .getResource(function (error, resource) {
+            if (error) {
+                console.error('No luck :-)', error, follow);
+                return;
+            }
+
+            if (main) {
+                main.hide();
+                main = null;
+            }
+
+            console.log('We have followed the path and reached our destination.');
+            console.log(JSON.stringify(resource, null, '  '));
+            console.log(JSON.stringify(follow, null, '  '));
+
+            var items = _.map(resource, function (item) {
+                return {
+                    title: item.title
+                };
+            });
+
+            var menu = new UI.Menu({
+                sections: [{
+                        items: items
+                    }]
+            });
+            menu.on('select', function (e) {
+                var newFollow = follow.slice();
+                newFollow.unshift('item[' + e.itemIndex + ']');
+
+                if (resource[e.itemIndex].action) {
+                    var url = api.getFrom() + resource[e.itemIndex]._links.self.href;
+                    ajax({
+                        method: 'POST',
+                        url: url
+                    });
+                    return;
+                }
+                loadMenu(newFollow);
+            });
+            menu.show();
+        });
+};
+loadMenu(['item[$all]']);
