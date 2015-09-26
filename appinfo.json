@@ -1,48 +1,45 @@
 {
-  "appKeys": {},
+  "uuid": "133215f0-cf20-4c05-997b-3c9be5a64e5b",
+  "shortName": "Pebble Connect",
+  "longName": "Pebble Connect",
+  "companyName": "Marc Easen",
+  "versionCode": 1,
+  "versionLabel": "1.0",
   "capabilities": [
     "configurable"
   ],
-  "companyName": "Meiguro",
-  "longName": "Pebble.js",
+  "watchapp": {
+    "watchface": false
+  },
+  "appKeys": {},
   "resources": {
     "media": [
       {
-        "file": "images/menu_icon.png",
         "menuIcon": true,
+        "type": "png",
         "name": "IMAGE_MENU_ICON",
-        "type": "bitmap"
+        "file": "images/menu_icon.png"
       },
       {
-        "file": "images/logo_splash.png",
+        "type": "png",
         "name": "IMAGE_LOGO_SPLASH",
-        "type": "bitmap"
+        "file": "images/logo_splash.png"
       },
       {
-        "file": "images/tile_splash.png",
+        "type": "png",
         "name": "IMAGE_TILE_SPLASH",
-        "type": "bitmap"
+        "file": "images/tile_splash.png"
       },
       {
-        "file": "fonts/UbuntuMono-Regular.ttf",
+        "type": "font",
         "name": "MONO_FONT_14",
-        "type": "font"
+        "file": "fonts/UbuntuMono-Regular.ttf"
       }
     ]
   },
-  "sdkVersion": "3",
-  "shortName": "Pebble.js",
   "targetPlatforms": [
     "aplite",
-    "basalt",
-    "chalk",
-    "diorite",
-    "emery"
+    "basalt"
   ],
-  "uuid": "133215f0-cf20-4c05-997b-3c9be5a64e5b",
-  "versionCode": 1,
-  "versionLabel": "0.4",
-  "watchapp": {
-    "watchface": false
-  }
+  "sdkVersion": "3"
 }
