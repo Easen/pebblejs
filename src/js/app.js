@@ -74,11 +74,12 @@ var loadMenu = function (follow) {
                     ajax({
                         method: 'POST',
                         url: url
-                    }, function (){
+                    }, function (data, statusCode) {
+                        var timeout = 250;
                         notification.subtitle('Sent! :)');
                         setTimeout(function() {
                             notification.hide();
-                        }, 2000);
+                        }, timeout);
                     }, function (){
                         notification.subtitle('An error occured :(');
                     });
