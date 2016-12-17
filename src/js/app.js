@@ -11,11 +11,11 @@ var _ = require('underscore');
 var traverson = require('traverson');
 var JsonHalAdapter = require('traverson-hal');
 
-var apiHost = 'http://192.168.1.134:8080';
+var apiHost = 'http://192.168.1.15:8080';
 
 // Loading page
 var main = new UI.Card({
-    title: 'Pebble Connect',
+    title: 'PConnect',
     icon: 'images/menu_icon.png',
     subtitle: 'Loading...'
 });
